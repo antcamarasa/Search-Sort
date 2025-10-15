@@ -80,3 +80,7 @@ Ainsi de suite jusqu'a a voir terminé notre cycle.
 
 #### Version avec doublon
 
+La version avec doublon est similaire. L'idée est si on veux insérer un élement a une position mais qu'a cette position un doublon est présent alors on avance de 1, jusqu'a qui n'y ai plus de doublons ET qu'on ne soit pas au niveau du Trou ! car si on passe au niveau du Trou alors on insére notre élément et on termine le cycle. 
+
+
+Une fois cela visualiser l'implémentation est beaucoup plus simple.
