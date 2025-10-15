@@ -84,3 +84,58 @@ La version avec doublon est similaire. L'idée est si on veux insérer un éleme
 
 
 Une fois cela visualiser l'implémentation est beaucoup plus simple.
+
+#### Version finale 
+
+       def cycle_sort_correction(arr):
+        n = len(arr)
+        cycle_start = 0
+
+        while cycle_start < n - 1:
+            search_value = arr[cycle_start]
+
+            # boucle d’un cycle
+            while True:
+                # 1) Rang : compter sur TOUT le tableau, en s’excluant soi-même
+                index_to_insert = 0
+                for i in range(n):
+                    if i != cycle_start and arr[i] < search_value:
+                        index_to_insert += 1
+
+                # 2) Si déjà au bon endroit dans le bloc → cycle trivial
+                if index_to_insert == cycle_start:
+                    # reboucher le trou et passer au cycle suivant
+                    arr[cycle_start] = search_value
+                    cycle_start += 1
+                    break
+
+                # 3) Skip des doublons (avec bornes et stop si on retombe sur le trou)
+                toto = index_to_insert
+                tata = n
+
+                titi = arr[index_to_insert]
+                ttyty = search_value
+
+                while index_to_insert < n and arr[index_to_insert] == search_value:
+                    if index_to_insert == cycle_start:
+                        # le trou est revenu au départ → cycle terminé
+                        arr[cycle_start] = search_value
+                        cycle_start += 1
+                        break
+                    index_to_insert += 1
+                else:
+                    # 4) Écriture si on a trouvé une case distincte dans les bornes
+                    if index_to_insert < n:
+                        tmp = arr[index_to_insert]
+                        arr[index_to_insert] = search_value
+                        search_value = tmp
+                        # on continue le cycle avec le nouvel item porté
+                        continue
+                    # sinon (fin du tableau après skip) → cycle trivial
+                    arr[cycle_start] = search_value
+                    cycle_start += 1
+                    break
+
+                # si on a quitté le while via “break” dans le skip (retour trou)
+                # on sort aussi de la boucle du cycle
+                break
