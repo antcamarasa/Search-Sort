@@ -2,9 +2,6 @@
 Deep dive into search and sort algorithm
 
 ## Sort algorithm
-
---- 
-
 ### Cycle Sort.
 L'idée générale du cycle sort et de de triéer une liste sous forme de cycle.
 
@@ -80,8 +77,9 @@ Une fois l'élément récuperer, on va chercher sa place en le comparant avec to
 
 Ainsi de suite jusqu'a a voir terminé notre cycle. 
 
+---
 
-#### Version avec doublon
+### Version avec doublon
 
 La version avec doublon est similaire. L'idée est si on veux insérer un élement a une position mais qu'a cette position un doublon est présent alors on avance de 1, jusqu'a qui n'y ai plus de doublons ET qu'on ne soit pas au niveau du Trou ! car si on passe au niveau du Trou alors on insére notre élément et on termine le cycle. 
 
@@ -191,9 +189,32 @@ On reduit notre scope, afin de ne travailler que sur :
 
 Pourquoi ? 
 
-Car 4, le plus grand élément de la liste est correctement positionné. 
+Car 4, le plus grand élément de la liste est correctement positionné.
 
 On, continue ainsi de suite jusqu'a que notre n soit supérieur à 1.
+
+---
+### Radix Sort
+
+Il existe deux implémentation possible de l'algorithme radix sort : 
+- LSD
+- MSD
+
+LSD : (Least significant digit)
+- Trie du chiffre le moins significatif au plus significatif (droite → gauche).
+- À chaque étape, le tri est stable, donc l’ordre des chiffres déjà triés est conservé.
+- Plus simple à implémenter, souvent itératif.
+
+On trie d’abord par unités, puis dizaines, puis centaines.
+
+MDS : (Most significant digit)
+- Trie du chiffre le plus significatif au moins significatif (gauche → droite).
+- Après chaque tri, on divise le tableau en sous-listes selon le chiffre traité,
+- puis on trie récursivement chaque sous-liste.
+
+Plus complexe mais plus efficace sur de très grands ensembles (notamment chaînes)
+
+
 
 
         
