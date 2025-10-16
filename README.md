@@ -2,6 +2,9 @@
 Deep dive into search and sort algorithm
 
 ## Sort algorithm
+
+--- 
+
 ### Cycle Sort.
 L'idée générale du cycle sort et de de triéer une liste sous forme de cycle.
 
@@ -139,3 +142,58 @@ Une fois cela visualiser l'implémentation est beaucoup plus simple.
                 # si on a quitté le while via “break” dans le skip (retour trou)
                 # on sort aussi de la boucle du cycle
                 break
+
+---
+
+## Pancake Sort
+
+L'idée générale du pancake sort et de trié une liste uniquement en l'inversant. 
+
+Voici sont déroulé :
+1. On trouve l'index de l'élément le plus grans sur la liste
+2. On inverse la liste du début jusqu'a son index sans touché aux éléments après notre valeur maximal (cela nous permet de mettre au début de notre liste notre plus grand éléments)
+3. Il ne nous reste plus qu'a inversé la totalité de la liste, ainsi le plus grand élément se retrouve a la fin.
+4. On reduit la taille de la liste de 1 pour ne plus affecter le dernier element de la liste car c'est le plus grand et il est a sa bonne place. 
+5. On continue jusqu'a que le scope de la taille de la liste soit < 1. 
+
+#### Une image vaut mille mots
+
+        index =>  0   1    2   3 
+                _________________
+        arr =>  | 3 | 2 | 4 | 1 |
+                ––––––––––––––––-
+
+        1. On trouve le maximum :
+        max_value = 4
+        index_of_max_value = 2
+
+        2. On fait une rotation de notre sous liste
+        reverse(0, index_of_max_value)
+                _________________
+        arr =>  | 4 | 2 | 3 | 1 |
+                ––––––––––––––––-
+
+        3. Maintenant il nous reste plus qu'a inverser la totalité de la liste, afin que notre current_max_element : 4 soit trié
+        
+                _________________
+        arr =>  | 1 | 3 | 2 | 4 |
+                ––––––––––––––––-
+
+        n -= 1
+        
+On reduit notre scope, afin de ne travailler que sur :
+ 
+                ____________   _____
+        arr =>  | 1 | 3 | 2    | 4 |
+                ––––––––––––   ––––-
+   
+        Sans enlever 4 bien-sur, c'est une image mentale.
+
+Pourquoi ? 
+
+Car 4, le plus grand élément de la liste est correctement positionné. 
+
+On, continue ainsi de suite jusqu'a que notre n soit supérieur à 1.
+
+
+        
