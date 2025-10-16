@@ -216,5 +216,69 @@ Plus complexe mais plus efficace sur de très grands ensembles (notamment chaîn
 
 
 
+#### Radix Sort LSD
 
-        
+1. Definition
+Le Radix Sort repose sur un tri non comparatif, basé sur le classement par chiffre.
+
+Imaginons la liste suivante : 
+
+        arr = [15, 1, 321]
+
+- Premierement on trouve l'élement le plus grand de la liste => 321.
+- Deuxiemement, on calcul le nombre de chiffres qu'il contient => 3.
+
+
+A partir de ce moment il existe deux implémentations possibles :
+- Convertir chaque nombre en string de même longeur
+- Version arithmétique (pas de conversion on travaille directement sur les chiffres grâce aux opérations mathématiques %, //)
+
+#### Radix LSD, version conversion en chaine de carractères
+
+Pour rappel nous avons identifié, le chiffre le plus grand => 321. Nous avon égalemebt identifier qu'il contient trois elements. 3, 2 et 1.
+
+Donc notre troisième étape est de convertir les autres element de notre liste sous le même modèle.
+
+        arr = [015, 001, 321]
+
+Attention ! : En python on ne peux pas ajouter de 0 devant un nombre c'est pourquoi on doit le convertir en string.
+
+Le plus dur est fait ! Il nous reste une dernière étape, le coeur du radix sort.
+
+1. On créer des bucket, 10 au total représentant un nombre allant de 0 à 9.
+
+                bucket [[], [], [], [], [], [], [], [], [], []]
+
+2. Pour chaque élément de la liste on ne regarde que le LSD (least significant number)
+
+                015 -> 5 est le Least significant number
+                Et on l'ajoute dans le bucket 5.
+
+                bucket [[], [], [], [], [], [015], [], [], [], []]
+
+On continue pour 001 et 321
+
+                bucket [[001, 321], [], [], [], [], [015], [], [], [], []]
+
+Maintenant on applati bucket pour ne recupérer qu'un tableau de valeur :
+                
+                arr = [001, 015, 321]
+
+
+3. On continue en incrémentant le least signifcant number de 1, donc on réitère l'opération sur le deuxieme element de chaque nombres.
+   
+                 bucket [[], [], [], [], [], [], [], [], [], []]
+
+                 bucket [[001, 015], [], [321], [], [], [], [], [], [], []]
+
+                 arr = [001, 015, 321]
+
+4. On fait pareil avec le dernier element qui est le MSD (most singificant digit)
+
+                 bucket [[], [], [], [], [], [], [], [], [], []]
+
+                 bucket [[001, 015], [], [], [321], [], [], [], [], [], []]
+
+                 arr = [001, 015, 321]
+5. Le MSD est atteint notre algorithme et terminé et notre liste est trié.
+
