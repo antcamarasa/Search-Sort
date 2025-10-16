@@ -282,3 +282,123 @@ Maintenant on applati bucket pour ne recupérer qu'un tableau de valeur :
                  arr = [001, 015, 321]
 5. Le MSD est atteint notre algorithme et terminé et notre liste est trié.
 
+#### Code implémentation (Radix, LSD, String Converting)
+
+Linear : 
+
+    def radix_sort(arr):
+
+    #1 Find the maximum value :
+    max_value = max(arr)
+
+    #2 Count how many digits :
+    nbr_digit = len(str(max_value))
+
+    #3. Make all element in array = to nbr_digit
+    """
+     Méthodes itératives classique :
+        
+        for index, element in enumerate(arr):
+            if len(str(element)) == nbr_digit:
+                new_arr.append(str(element))
+                continue
+            else :
+                current_count = len(str(element))
+
+            current_element = str(element)
+            while current_count != nbr_digit:
+                current_element = "0" + current_element
+                current_count += 1
+
+            new_arr.append(current_element)
+
+
+    Methode pythonic, utilisant les formateur de string :
+        x → la variable à afficher.
+        : → introduit les options de formatage.
+        0 → indique que les espaces vides doivent être remplis par des zéros.
+        3 → fixe la largeur minimale à 3 caractères.
+        d → signifie decimal integer (entier décimal).
+    
+    """
+    formatted = [f"{x:0{nbr_digit}d}" for x in arr]
+
+    index = len(formatted[0]) - 1
+    while index >= 0:
+        buckets = [[] for _ in range(0, 10)]
+        print(buckets)
+        for element in formatted:
+            buckets[int(element[index])].append(element)
+
+        formatted = [element for elements in buckets for element in elements]
+        print(formatted)
+        index -= 1
+
+
+Recursive : 
+
+    def radix_sort_recursive(arr):
+            max_value = max(arr)
+            nbr_digit = len(str(max_value))
+            formatted = [f"{x:0{nbr_digit}d}" for x in arr]
+
+            def helper_recursive(formatted_arr, index):
+                if index < 0:
+                    return formatted_arr
+
+                buckets = [[] for _ in range(0, 10)]
+                print(buckets)
+                for element in formatted_arr:
+                    buckets[int(element[index])].append(element)
+
+                formatted_arr = [element for elements in buckets for element in elements]
+                index -= 1
+                return helper_recursive(formatted_arr, index)
+
+            formatted = helper_recursive(formatted, len(formatted[0]) - 1)
+            return [int(x) for x in formatted]
+
+#### Radix LSD, version conversion arithmétique. 
+Le code est le même, le princiipe également. 
+
+
+Seulement au lieu de convertir nos nombres en string contenant autant d'éléments que le plus grand élément on fait un opération simple. 
+
+                Nombre // 1 % 10
+                
+                # diviser par 1 nous donne le nombre sans modification et % 10 prend le dernier element de ce nombre soit :
+                321 /1 = 321 et 321 % 10 => 1
+
+                On continue avec le nombre des dizaines :
+                Nombre // 10 % 10
+
+                321 // 10 = 32 et 32 % 10 => 2
+
+                On continue :
+                Nombre // 100 % 10
+                321 // 100 = 3 et 3 % 10 = 3
+
+
+#### Code implementation (Radix, LSD, arithmétique)
+
+        def radix_sort_arithmetic(arr):
+                max_value = max(arr)
+                number_digit = len(str(max_value))
+
+                index = 0
+                divisor = 1
+                
+                while index < number_digit:
+                        buckets = [[] for _ in range(0, 10)]
+
+                        for element in arr:
+                            bucket_position = (element // divisor) % 10
+                            buckets[bucket_position].append(element)
+
+                        arr = [element for elements in buckets for element in elements]
+
+                        divisor *= 10
+                        index +=1
+                
+                return arr
+
