@@ -215,6 +215,7 @@ MDS : (Most significant digit)
 Plus complexe mais plus efficace sur de très grands ensembles (notamment chaînes)
 
 
+--- 
 
 #### Radix Sort LSD
 
@@ -358,6 +359,9 @@ Recursive :
             formatted = helper_recursive(formatted, len(formatted[0]) - 1)
             return [int(x) for x in formatted]
 
+
+---
+
 #### Radix LSD, version conversion arithmétique. 
 Le code est le même, le princiipe également. 
 
@@ -402,3 +406,105 @@ Seulement au lieu de convertir nos nombres en string contenant autant d'élémen
                 
                 return arr
 
+
+---
+
+#### Radix Sort, MSD(most significant digit)
+
+Maintenant, l'idée est de faire l'inverse, cet algorithm est légèrement plus complexes mais bien meilleure en performance sur de grosses liste a trié, donc indispensable. Rien de complexe a part un compréhensions de la pile d'appel récursif. 
+
+Le principe est le même on définit deux variables : 
+- L'élément maximum de notre liste
+- Son nombre de digit
+
+Cela nous servira a fair l'opération arithmétique suivant : 
+
+                nombre_digit = 3
+                current_value = 351
+
+                # Objectif récupérer le most significant value donc :
+                351 // 10 puissance (numbre_digit - 1) % 10 => 3
+
+                Pour nombre_digit = 2
+                351 // 10 puissance (numbre_digit - 1) % 10 => 5
+
+                Pour nombre_digit = 1
+                351 // 10 puissance (numbre_digit - 1) % 10 => 1
+
+Ceci est le calcul le plus complexe de l'algo donc relativement simple. 
+
+Maintenant, il faut comprendre la pile d'appel récursif, on definit un fonction récursive qui va avoir pour objectif :
+- Insérer dans une liste de bucket chaque nombres de ma liste en fonction de leur MSD
+
+                  [[], [], [], [329, 355], [457, 436], [], [657], [720], [839], []]
+                  clean = [[329, 355], [457, 436], [657], [720], [839]]
+                  accumulateur_local = [] # c'est cet acumulateur qui va permettre de propager vers le haut de la pile les nombre triées.      
+  
+- Appeler récursivement chaque sous tableau, ([329, 355], [457, 436], [657], [720], [839]) ...
+
+                  
+                  [[], [], [329], [], [], [355], [], [], [], []]
+                  clean  = [[329], [355]]
+                  accumulateur_local = []
+  
+- Appeler récursivement chaque sous tableau
+
+                  [329] => Cas de base on retourne 329
+                  Et on le stock dans accumulateur_local = [] de la scope précédent donc la scope
+
+                  clean  = [[329], [355]]
+                  accumulateur_local = [329]
+
+                  On appelle récursivment [355] => cas de base on retourne 355 dans la scope précedente
+                  clean  = [[329], [355]]
+                  accumulateur_local = [329, 355]
+
+                  Et ici on retourne accumulateur local a l'appel précédent et on l'ajoute dans accumulateur local de la scope supérieur
+                  
+                  clean = [[329, 355], [457, 436], [657], [720], [839]]
+                  accumulateur_local = [329, 355]
+
+                  On continue avec [457, 436], [657], [720], [839]
+
+Ainsi on obtient une liste trié !
+                        
+                  [329, 355, 436, 457, 657, 720, 839]
+
+
+#### Implémentation du code 
+
+
+        def radix_sort_msd_second_implementation(arr):
+            max_value = max(arr)
+            number_digit = len(str(max_value))
+
+            def helper_recursive(current_arr, current_msd):
+                if len(current_arr) <= 1:
+                    return current_arr
+                elif current_msd < 1:
+                    return current_arr
+
+                buckets = [[] for _ in range(0, 10)]
+                for element in current_arr:
+                     msd_value = element // (10 ** (current_msd - 1)) % 10
+                     buckets[msd_value].append(element)
+
+                clean_bucket = [bucket for bucket in buckets if bucket]
+                accumulateur = []
+
+                current_msd -= 1
+                for element in clean_bucket:
+                    tmp = helper_recursive(element, current_msd)
+            
+                    # Permet d'aplatir mon tableau final, sinon j'ai des tableau imbriqué pour simplifier 
+                    # Juste => accumulateur.append(tmp)
+                    if isinstance(tmp, list):
+                        accumulateur.extend(tmp)
+                    else :
+                        accumulateur.append(tmp)
+        
+                
+                # Indispensable remonte au appel parent le résultat obtenu dans les appels enfant.
+                return accumulateur
+
+            return helper_recursive(arr, number_digit)
