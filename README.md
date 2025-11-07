@@ -511,9 +511,94 @@ Ainsi on obtient une liste trié !
 
 
 # Shell Sort
-## Tri par insertion par intervalle - Gap Insertion Sort
+Idée : on trie la liste via plusieurs tris par insertion sur des sous-séquences espacées d’un pas (gap) qu’on réduit (÷2) jusqu’à 1.
 
-Données :
-- Liste complète : nlist = [54, 26, 93, 17, 77, 31, 44, 55, 20]
-- Sous-liste (Indices 0, 4, 8) : 54 (index 0), 77 (index 4), 20 (index 8)
-- Paramètres : start = 0, gap = 4
+Liste de départ :
+     
+     index =>   0     1    2    3    4    5    6    7   8
+          __________________________________________________
+     arr   => | 57 | 46 | 43 | 27 | 14 | 41 | 45 | 21 | 70 |
+          ——————————————————————————————————————————————————
+
+     #######################################   
+     #Passe 1 — gap = len(arr)//2 = 9//2 = 4
+
+             On trie chaque sous-séquence d’indices pris tous les 4 :
+             - start = 0 : indices [0, 4, 8] → valeurs [57, 14, 70] 
+            |
+            |
+            |           Il faut visualiser cela :
+            |
+            |                 ######################### 
+            |                 index =>   0    4   8
+            |                 _________________________
+            |                 arr   => | 57 | 14 | 70 |
+            |                               |
+            |                         Trié  | Non Trié
+            |                 —————————————————————————
+            |
+            |                 On compare 14 avec 57 => 57 | 57 | 70
+            |                 Fin de notre liste donc on s'arrête et on insérer notre élément courant 14.
+            |                 
+            |                 #########################
+            |                 index =>   0    4   8
+            |                 _________________________
+            |                 arr   => | 14 | 57 | 70 |
+            |    
+            |            ####################################################
+            |            A ce stade notre liste vaut :
+            |            index =>   0     1    2    3    4    5    6    7   8
+            |            ______________________________________________________
+            |            arr   => | 14 | 46 | 43 | 27 | 57 | 41 | 45 | 21 | 70 |
+            |            ——————————————————————————————————————————————————————
+            |
+             - start=1 : indices [1, 5] → valeurs [46, 41] → insertion à pas : 41 remonte avant 46
+             - start=2 : indices [2, 6] → valeurs [43, 45] → déjà en ordre
+             - start=3 : indices [3, 7] → valeurs [27, 21] → insertion à pas : 21 remonte avant 27
+             
+    
+    #Passe 2 — gap = gap//2 = 4//2 = 2
+        
+        On trie maintenant les deux familles de sous-séquences modulo 2 :
+             - start=0 : indices [0,2,4,6,8] → insertion à pas sur [14, 43, 57, 45, 70]
+             - start=1 : indices [1,3,5,7] → insertion à pas sur [41, 21, 46, 27] (21 et 27 “remontent”)
+             |
+             |           On imagine  : [41, 21, 46, 27]
+             |           
+             |           #1 Current  = start + gap => 21 (on va comparer jusqu'au début) current(21) et current - gap(41)
+             |                        => 21 < 41 
+             |                        => [21, 41, 46, 27] => Fin on place current à position => [21, 41, 46, 27]
+             |
+             |                        Ansi de suite jusqu'a ; 21, 27, 41, 46
+        
+                                
+  Impplémentation : 
+
+                def shellSort(alist):
+                    sublistcount = len(alist)//2
+                    while sublistcount > 0:
+                      for start_position in range(sublistcount):
+                        gap_InsertionSort(alist, start_position, sublistcount)
+                
+                      print("After increments of size",sublistcount, "The list is",nlist)
+                
+                      sublistcount = sublistcount // 2
+        
+                def gap_InsertionSort(nlist,start,gap):
+                    for i in range(start+gap,len(nlist),gap):
+                        current_value = nlist[i]
+                        position = i
+        
+                        while position>=gap and nlist[position-gap]>current_value:
+                            nlist[position]=nlist[position-gap]
+                            position = position-gap
+        
+                        nlist[position]=current_value
+        
+
+                nlist = [14,46,43,27,57,41,45,21,70]
+                shellSort(nlist)
+                print(nlist)
+
+     
+
