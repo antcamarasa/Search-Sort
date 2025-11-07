@@ -1,3 +1,32 @@
+# 🔍 SEARCH & SORT ALGORITHMS — SUMMARY
+## 🔎 SEARCH ALGORITHMS
+- [Linear Search](#linear-search)
+- [Binary Search](#binary-search)
+- [Jump Search](#jump-search)
+- [Interpolation Search](#interpolation-search)
+- [Exponential Search](#exponential-search)
+- [Fibonacci Search](#fibonacci-search)
+
+## ⚙️ SORTING ALGORITHMS 
+- [Bubble Sort](#bubble-sort)
+- [Selection Sort](#selection-sort)
+- [Insertion Sort](#insertion-sort)
+- [Shell Sort](#shell-sort)
+- [Cycle Sort](#cycle-sort)
+- [Comb Sort](#comb-sort)
+- [Gnome Sort](#gnome-sort)
+- [Merge Sort](#merge-sort)
+- [Quick Sort](#quick-sort)
+- [Heap Sort](#heap-sort)
+- [Counting Sort](#counting-sort)
+- [Bucket Sort](#bucket-sort)
+- [Radix Sort](#radix-sort)
+
+## Bonus
+- [Complexity Table (O-notation)](#complexity-table)
+- [When to Use Which Algorithm](#when-to-use-wh)
+
+
 # Search-Sort & Sort algorithm
 Deep dive into search and sort algorithm
 
