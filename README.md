@@ -572,7 +572,7 @@ Liste de départ :
              |                        Ansi de suite jusqu'a ; 21, 27, 41, 46
         
                                 
-  Impplémentation : 
+  Impplémentation classique : 
 
                 def shellSort(alist):
                     sublistcount = len(alist)//2
@@ -600,5 +600,8 @@ Liste de départ :
                 shellSort(nlist)
                 print(nlist)
 
+Impplémentation récursive :
+TODO
      
+## RADIX SORT
 
