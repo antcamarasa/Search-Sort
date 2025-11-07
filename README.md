@@ -508,3 +508,12 @@ Ainsi on obtient une liste trié !
                 return accumulateur
 
             return helper_recursive(arr, number_digit)
+
+
+# Shell Sort
+## Tri par insertion par intervalle - Gap Insertion Sort
+
+Données :
+- Liste complète : nlist = [54, 26, 93, 17, 77, 31, 44, 55, 20]
+- Sous-liste (Indices 0, 4, 8) : 54 (index 0), 77 (index 4), 20 (index 8)
+- Paramètres : start = 0, gap = 4
