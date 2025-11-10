@@ -222,6 +222,111 @@ Car 4, le plus grand élément de la liste est correctement positionné.
 
 On, continue ainsi de suite jusqu'a que notre n soit supérieur à 1.
 
+
+---
+### Counting Sort
+Au lieu de comparer les éléments entre eux (comme le font le Merge Sort ou le Quick Sort), le Counting Sort utilise un tableau auxiliaire pour compter la fréquence de chaque valeur de la liste d'entrée.
+
+#### Les quatres étapes clés
+1. Compter la fréquence
+On crée un tableau de comptage (count array, Count) dont la taille est égale a la valeur maximal du tableau + 1 (pour y inclure les valeurs 0).
+
+        ##########################################################################
+        idx    0   1   2   3   4   5   6   7   8   9   10  11  12   13  14  15  16 
+        __________________________________________________________________________   
+        A   = [2,  1,  1,  0,  2,  5,  4,  0,  2,  8,  7,  7,   9,  2,  0,   1,  9]
+
+Le plus grand élément du tableau est 9. Donc on va créer un tableau de 10 éléments et compter les occurences de chacun des éléments du tableau.
+
+        ###########################################################################
+        idx        0   1   2   3   4   5   6   7   8   9
+        count = [  3,  3,  4,  0,  1,  1,  0,  2,  1,  2 ]
+
+2. ➕ Calculer le Cumul
+On transforme le tableau de comptage Count en un tableau de comptage cumulé.
+
+        ###########################################################################
+        idx        0   1   2   3   4   5   6   7   8   9
+        count = [  3,  3,  4,  0,  1,  1,  0,  2,  1,  2 ]
+        c_cumul=[  3,  6,  10, 10, 11, 12, 12, 14, 15, 17]
+        
+   
+4. ➡️ Placer les Éléments
+C'est l'étape la plus délicate, qui assure la stabilité du tri.
+- On crée un tableau de sortie (Output Array, B) de la même taille que la liste d'entrée A.
+- On parcourt la liste d'entrée à l'envers (de la droite a la gauche).
+- Pour chaque index d'élement dans arr correspond à sa position dans c-cumul -1 (explication ci dessous)
+
+        ##########################################################################
+        idx    0   1   2   3   4   5   6   7   8   9   10  11  12   13  14  15  16 
+        __________________________________________________________________________   
+        A   = [2,  1,  1,  0,  2,  5,  4,  0,  2,  8,  7,  7,   9,  2,  0,   1,  9]
+        |                                                                        ^
+        |                                                                        |
+        B   = [ ,  ,    ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,    ,    ,   ]
+
+        #################################################
+        |  idx        0   1   2   3   4   5   6   7   8   9
+        |  c_cumul=[  3,  6,  10, 10, 11, 12, 12, 14, 15, 17]
+        |
+        |  Current    = 9 # Current est égale a l'index dans count
+        |  position_to_insert_current = c_cumul[9] = 17
+        |
+        |  Maintenant deux étapes :
+        |  1. On décremente c_cumul[current] -= 1 #  c_cumul=[  3,  6,  10, 10, 11, 12, 12, 14, 15, !!16!!]
+        |  2. On va placer current = 9 à position_to_insert_current
+           B   = [ ,  ,    ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,    ,    ,  9]
+
+         /////////////////////////  FIN DE LA PREMIERE ITERATION ///////////////////////// 
+        |  On décréement :
+        |  ##########################################################################
+        |  idx    0   1   2   3   4   5   6   7   8   9   10  11  12   13  14  15  16 
+        |  __________________________________________________________________________   
+        |  A   = [2,  1,  1,  0,  2,  5,  4,  0,  2,  8,  7,  7,   9,  2,  0,   1,  9]
+        |                                                                       ^
+        |                                                                       |
+        |  B   = [ ,  ,    ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,    ,    ,  9]
+        |
+        |  ##################################################
+        |  c_cumul=[  3,  6,  10, 10, 11, 12, 12, 14, 15, 16]
+            
+        |  Current    = 1 # Current est égale a l'index dans count
+        |  position_to_insert_current = c_cumul[1] = 6
+        |
+        |  Maintenant deux étapes :
+        |  1. On décremente c_cumul[current] -= 1 #  c_cumul=[  3,  !!5!!,  10, 10, 11, 12, 12, 14, 15, 16]
+        |  2. On va placer current = 1 à position_to_insert_current
+           B   = [  ,  ,    ,   ,   ,  1,   ,   ,   ,   ,   ,   ,   ,   ,    ,    ,  9]
+        /////////////////////////  FIN DE LA DEUXIEME ITERATION ///////////////////////// 
+        
+En résumé : 
+#### 🧩 1️⃣ Les trois tableaux mentaux
+
+A → ton tableau d’origine (les données à trier)
+B → le tableau trié (la “destination”)
+C → le comptage brut (combien de fois chaque chiffre apparaît)
+C_cumul → le cumul de C (combien d’éléments ≤ à chaque chiffre)
+          
+#### ⚙️ 2️⃣ Ce que signifie vraiment chaque case de C_cumul
+
+C_cumul[x] = “le nombre total d’éléments dont le chiffre est ≤ x”.
+
+Autrement dit, les chiffres ≤ x occupent les C_cumul[x] premières cases du tableau trié B.
+
+Quand tu traites 321 (chiffre = 1) :
+
+        C_cumul[1] = 2 → donc “les chiffres ≤ 1 remplissent les 2 premières cases” →
+        → la dernière case libre pour ce chiffre est index 1 (2 - 1).
+        -> Puis tu décrémentes C_cumul[1] à 1 pour le suivant.
+
+| Tableau | Signification     | Exemple              |
+| ------- | ----------------- | -------------------- |
+| A       | données           | `[15, 1, 321]`       |
+| C       | comptage          | `[0, 2, 0, 0, 0, 1]` |
+| C_cumul | territoire cumulé | `[0, 2, 2, 2, 2, 3]` |
+| B       | résultat          | `[1, 321, 15]`       |
+
+
 ---
 ### Radix Sort
 
