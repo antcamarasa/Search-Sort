@@ -7,20 +7,17 @@
 - [Exponential Search](#exponential-search)
 - [Fibonacci Search](#fibonacci-search)
 
-## ⚙️ SORTING ALGORITHMS 
+## ⚙️ SIMPLE SORTING ALGORITHMS 
 - [Bubble Sort](#bubble-sort)
 - [Selection Sort](#selection-sort)
 - [Insertion Sort](#insertion-sort)
-- [Shell Sort](#shell-sort)
-- [Cycle Sort](#cycle-sort)
-- [Comb Sort](#comb-sort)
-- [Gnome Sort](#gnome-sort)
+
+## ⚙️ ADVANCED SORTING ALGORITHMS 
 - [Merge Sort](#merge-sort)
+- [Shell Sort](#shell-sort)
 - [Quick Sort](#quick-sort)
-- [Heap Sort](#heap-sort)
-- [Counting Sort](#counting-sort)
-- [Bucket Sort](#bucket-sort)
 - [Radix Sort](#radix-sort)
+- [Tim_sort](#time-sort)
 
 ## Bonus
 - [Complexity Table (O-notation)](#complexity-table)
@@ -30,306 +27,213 @@
 # Search-Sort & Sort algorithm
 Deep dive into search and sort algorithm
 
-## Sort algorithm
-### Cycle Sort.
-L'idée générale du cycle sort et de de triéer une liste sous forme de cycle.
+## Simple Sort algorithm
+TODO
 
-Récuper un élément le placer a sa position final et tant que le trou ... n'est pas bouché on continue. Si il est bouché on passe alors a un deuxième cycle.
+## Advanced Sort algorithm
 
-Ansi de suite, jusqu'a ce que la longeur de notre cycle soit égal à la longeur de notre liste, a ce moment notre liste est trié.
+### Merge Sort
+Le merge sort (ou tri par fusion) est un algorithme de tri diviser pour régner (divide and conquer).
+Il est à la fois efficace (complexité en O(n log n)) et stable (il conserve l’ordre des éléments égaux).
+Voyons comment il fonctionne, étape par étape, sans aucun code.
 
-Voici le concept : 
+#### Le principe général
+Le merge sort repose sur trois grandes étapes :
+1. Diviser le tableau en deux moitiés jusqu’à obtenir des sous-tableaux de taille 1.
+   → Un tableau de taille 1 est déjà trié.
+2. Trier récursivement chaque moitié (en appliquant le même processus).
+3. Fusionner ces deux moitiés triées pour obtenir un tableau trié.
+
+#### Étape par étape sur un exemple
+Imaginons qu’on veuille trier ce tableau :
+
+      [8, 3, 5, 4, 7, 6, 1, 2]
+
+Etape 1 : Division
+
+On divise en deux moitiés : 
+- Gauche -> [8, 3, 5, 4]
+- Droite -> [7, 6, 1, 2]
+On continue à diviser récursivement chaque partie jusqu’à arriver à des sous-tableaux de taille 1 :
+- [8, 3, 5, 4] devient [8, 3] et [5, 4], puis [8], [3], [5], [4]
+- [7, 6, 1, 2] devient [7, 6] et [1, 2], puis [7], [6], [1], [2]
+
+À ce stade, on a :
+
+          [8] [3] [5] [4] [7] [6] [1] [2]
+
+Chaque bloc est trié individuellement (car un seul élément).
+
+Étape 2 : Fusion successive
+
+On commence maintenant à fusionner les petits tableaux deux à deux, en les triant lors de la fusion : 
+- Fusion de [8] et [3] → [3, 8]
+- Fusion de [5] et [4] → [4, 5]
+- Fusion de [7] et [6] → [6, 7]
+- Fusion de [1] et [2] → [1, 2]
+
+Puis on fusionne à nouveau :
+- [3, 8] et [4, 5] → [3, 4, 5, 8]
+- [6, 7] et [1, 2] → [1, 2, 6, 7]
+
+Enfin :
+- Fusion finale de [3, 4, 5, 8] et [1, 2, 6, 7] → [1, 2, 3, 4, 5, 6, 7, 8]
+
+⚙️ 3. Comment se fait la fusion exactement ?
+
+Lorsqu’on fusionne deux tableaux triés, on les compare élément par élément :
+- On prend le plus petit des deux premiers éléments et on le place dans un nouveau tableau.
+- On avance dans le tableau d’où provient l’élément choisi.
+- On répète jusqu’à ce qu’un des deux tableaux soit vide.
+- Puis on ajoute le reste du tableau non vide (puisqu’il est déjà trié).
+
+#### Vue d'ensemble 
+
+Exemple d'entrée :
+[38, 27, 43, 3, 9, 82, 10]
+
+1. Décomposition (divide)
+----------------------
+
+                              [38, 27, 43, 3, 9, 82, 10]
+                             /                         \
+                   [38, 27, 43, 3]                   [9, 82, 10]
+                  /               \                 /          \
+            [38, 27]            [43, 3]         [9, 82]       [10]
+            /     \            /     \          /     \         |
+         [38]    [27]       [43]    [3]      [9]    [82]      [10]
+
+
+2. Fusions (conquer)
+-----------------
+
+Étape 1 – fusion de paires élémentaires:
+[38] + [27] -> [27, 38]
+[43] + [3]  -> [3, 43]
+[9]  + [82] -> [9, 82]
+[10]        -> [10] (déjà trié)
+
+Résultat partiel:
+[27, 38]         [3, 43]           [9, 82]         [10]
+
+Étape 2 – fusion des sous-tableaux triés:
+[27, 38] + [3, 43]  -> [3, 27, 38, 43]
+[9, 82]  + [10]     -> [9, 10, 82]
+
+Résultat partiel:
+[3, 27, 38, 43]                     [9, 10, 82]
+
+Étape 3 – fusion finale:
+[3, 27, 38, 43] + [9, 10, 82] 
+=>
+[3, 9, 10, 27, 38, 43, 82]
+
+
+Arbre compltet
+--------------
+
+                         [38,27,43,3,9,82,10]
+                       /                       \
+           [38,27,43,3]                         [9,82,10]
+          /             \                      /         \
+      [38,27]          [43,3]               [9,82]      [10]
+      /     \          /   \               /    \
+   [38]   [27]      [43]  [3]           [9]    [82]
+
+      \     /          \   /               \    /
+     [27,38]          [3,43]              [9,82]        [10]
+
+          \             /                      \         /
+           [3,27,38,43]                          [9,10,82]
+                       \                         /
+                        [3,9,10,27,38,43,82]
+
+
+Rappel complexité
+-----------------
+- Temps: O(n log n)
+- Espace: O(n) (fusion externe)
+
+
+#### Implementation 
+        def merge_sort(arr):
+             def helper_recursive(data):
+                 if len(data) == 1:
+                     return data
         
-        list = [50, 30, 20, 10, 40]
+                 mid = len(data) // 2
+                 left = data[:mid]
+                 right = data[mid:]
         
-        on récupére le premier element 
+                 left_result = helper_recursive(left)
+                 right_result = helper_recursive(right)
+        
+                 left_index = 0
+                 right_index = 0
+        
+                 destination = []
+        
+                 while left_index < len(left_result) and right_index < len(right_result):
+                     if left_result[left_index] <= right_result[right_index]:
+                         destination.append(left_result[left_index])
+                         left_index += 1
+                     else:
+                         destination.append(right_result[right_index])
+                         right_index += 1
+        
+                 if left_index < len(right_result):
+                     destination.extend(left_result[left_index:])
+                 else:
+                     destination.extend(right_result[right_index:])
+        
+                 return destination
+     return helper_recursive(arr)
 
-                  50
-                  ^
-                  | 
-        list = [ ..., 30, 20, 10, 40 ]
 
-Attention :  a aucun moment on ne retire 50 de la lisite c'est une image mentale. 
-Une fois l'élément récuperer, on va chercher sa place en le comparant avec tous les autres éléments de la liste (attention a ne pas le comparer avec lui même). 
+#### Deuxième implementation
+        def merge_sort_correction(arr, level):
+            indent = "     " * level
+            print(f"{indent} Entrée : {arr}")
+        
+            if len(arr) > 1:
+                mid = len(arr) // 2
+                left_result = arr[:mid]
+                right_result = arr[mid:]
+                print(f"{indent} split left : {left_result} | split right : {arr[mid:]}")
+        
+                merge_sort_correction(left_result, level + 1)
+                merge_sort_correction(right_result, level + 1)
+        
+        
+                left, right, insert_position = 0,0,0
+                print(f"{indent} Fusion : gauche= {left_result} | droite= {right_result}")
+                while left < len(left_result) and right < len(right_result):
+                    if left_result[left] <= right_result[right]:
+                        print(f"{indent} comparer {left_result[left]} vs {right_result[right]} -> prendre {left_result[left]} (gauche) → position : arr[{insert_position}]")
+                        arr[insert_position] = left_result[left]
+                        left += 1
+                    else:
+                        print(f"{indent} comparer {left_result[left]} vs {right_result[right]} -> prendre {right_result[right]} (droite) → position : arr[{insert_position}]")
+                        arr[insert_position] = right_result[right]
+                        right += 1
+                    insert_position += 1
+        
+        
+                while left < len(left_result):
+                        print(f"{indent} Reste gauche : copier {left_result[left]} -> position : arr[{insert_position}]")
+                        arr[insert_position] = left_result[left]
+                        left += 1
+                        insert_position += 1
+                while right < len(right_result):
+                        print(f"{indent} Reste droite : copier {right_result[right]} -> position : arr[{insert_position}]")
+                        arr[insert_position] = right_result[right]
+                        right += 1
+                        insert_position += 1
 
-#### Version sans doublon
-
-       |          CYCLE 1 
-       |
-       | #============== while : iteration : 1 =================
-       | 30 < 50 ? oui, index_to_insert += 1
-       | 20 < 50 ? oui, index_to_insert += 1
-       | 10 < 50 ? oui, index_to_insert += 1
-       | 40 < 50 ? oui, index_to_insert += 1
-       | 
-       | index_to_insert = 4               
-       |                       40
-       |                       ^
-       |                       |    
-       | list[..., 30, 20, 10, 50]
-       |
-        #============== while : iteration : 2 =================
-       | 
-       | 30 < 40 ? oui, index_to_insert += 1
-       | 20 < 40 ? oui, index_to_insert += 1
-       | 10 < 40 ? oui, index_to_insert += 1
-       | 50 < 40 ? non
-       |
-       | index_to_insert = 3
-       |
-       |                     10
-       |                     ^
-       |                     |    
-       |  list[..., 30, 20, 40, 50]
-       |
-        #============== while : iteration : 3 =================
-       |
-       | 30 < 10 ? non
-       | 20 < 10 ? non
-       | 40 < 10 ? non
-       | 50 < 10 ? non
-       |
-       | index_to_insert = 0 
-       | list[10, 30, 20, 40, 50]
-       |
-       | Le tri est rebouché on a terminé notre premier cycle.
-       | ========================================================
-       |
-       |             CYCLE 2
-       |
-       | On passe au deuxieme cycle comme cela : 
-       |
-       |             30
-       |             ^
-       |             |
-       |  list[10, ..., 20, 40, 50]
-
-Ainsi de suite jusqu'a a voir terminé notre cycle. 
-
+         print(f"{indent} Sortie : {arr}")
 ---
 
-### Version avec doublon
-
-La version avec doublon est similaire. L'idée est si on veux insérer un élement a une position mais qu'a cette position un doublon est présent alors on avance de 1, jusqu'a qui n'y ai plus de doublons ET qu'on ne soit pas au niveau du Trou ! car si on passe au niveau du Trou alors on insére notre élément et on termine le cycle. 
-
-
-Une fois cela visualiser l'implémentation est beaucoup plus simple.
-
-#### Version finale 
-
-       def cycle_sort_correction(arr):
-        n = len(arr)
-        cycle_start = 0
-
-        while cycle_start < n - 1:
-            search_value = arr[cycle_start]
-
-            # boucle d’un cycle
-            while True:
-                # 1) Rang : compter sur TOUT le tableau, en s’excluant soi-même
-                index_to_insert = 0
-                for i in range(n):
-                    if i != cycle_start and arr[i] < search_value:
-                        index_to_insert += 1
-
-                # 2) Si déjà au bon endroit dans le bloc → cycle trivial
-                if index_to_insert == cycle_start:
-                    # reboucher le trou et passer au cycle suivant
-                    arr[cycle_start] = search_value
-                    cycle_start += 1
-                    break
-
-                # 3) Skip des doublons (avec bornes et stop si on retombe sur le trou)
-                toto = index_to_insert
-                tata = n
-
-                titi = arr[index_to_insert]
-                ttyty = search_value
-
-                while index_to_insert < n and arr[index_to_insert] == search_value:
-                    if index_to_insert == cycle_start:
-                        # le trou est revenu au départ → cycle terminé
-                        arr[cycle_start] = search_value
-                        cycle_start += 1
-                        break
-                    index_to_insert += 1
-                else:
-                    # 4) Écriture si on a trouvé une case distincte dans les bornes
-                    if index_to_insert < n:
-                        tmp = arr[index_to_insert]
-                        arr[index_to_insert] = search_value
-                        search_value = tmp
-                        # on continue le cycle avec le nouvel item porté
-                        continue
-                    # sinon (fin du tableau après skip) → cycle trivial
-                    arr[cycle_start] = search_value
-                    cycle_start += 1
-                    break
-
-                # si on a quitté le while via “break” dans le skip (retour trou)
-                # on sort aussi de la boucle du cycle
-                break
-
----
-
-## Pancake Sort
-
-L'idée générale du pancake sort et de trié une liste uniquement en l'inversant. 
-
-Voici sont déroulé :
-1. On trouve l'index de l'élément le plus grans sur la liste
-2. On inverse la liste du début jusqu'a son index sans touché aux éléments après notre valeur maximal (cela nous permet de mettre au début de notre liste notre plus grand éléments)
-3. Il ne nous reste plus qu'a inversé la totalité de la liste, ainsi le plus grand élément se retrouve a la fin.
-4. On reduit la taille de la liste de 1 pour ne plus affecter le dernier element de la liste car c'est le plus grand et il est a sa bonne place. 
-5. On continue jusqu'a que le scope de la taille de la liste soit < 1. 
-
-#### Une image vaut mille mots
-
-        index =>  0   1    2   3 
-                _________________
-        arr =>  | 3 | 2 | 4 | 1 |
-                ––––––––––––––––-
-
-        1. On trouve le maximum :
-        max_value = 4
-        index_of_max_value = 2
-
-        2. On fait une rotation de notre sous liste
-        reverse(0, index_of_max_value)
-                _________________
-        arr =>  | 4 | 2 | 3 | 1 |
-                ––––––––––––––––-
-
-        3. Maintenant il nous reste plus qu'a inverser la totalité de la liste, afin que notre current_max_element : 4 soit trié
-        
-                _________________
-        arr =>  | 1 | 3 | 2 | 4 |
-                ––––––––––––––––-
-
-        n -= 1
-        
-On reduit notre scope, afin de ne travailler que sur :
- 
-                ____________   _____
-        arr =>  | 1 | 3 | 2    | 4 |
-                ––––––––––––   ––––-
-   
-        Sans enlever 4 bien-sur, c'est une image mentale.
-
-Pourquoi ? 
-
-Car 4, le plus grand élément de la liste est correctement positionné.
-
-On, continue ainsi de suite jusqu'a que notre n soit supérieur à 1.
-
-
----
-### Counting Sort
-Au lieu de comparer les éléments entre eux (comme le font le Merge Sort ou le Quick Sort), le Counting Sort utilise un tableau auxiliaire pour compter la fréquence de chaque valeur de la liste d'entrée.
-
-#### Les quatres étapes clés
-1. Compter la fréquence
-On crée un tableau de comptage (count array, Count) dont la taille est égale a la valeur maximal du tableau + 1 (pour y inclure les valeurs 0).
-
-        ##########################################################################
-        idx    0   1   2   3   4   5   6   7   8   9   10  11  12   13  14  15  16 
-        __________________________________________________________________________   
-        A   = [2,  1,  1,  0,  2,  5,  4,  0,  2,  8,  7,  7,   9,  2,  0,   1,  9]
-
-Le plus grand élément du tableau est 9. Donc on va créer un tableau de 10 éléments et compter les occurences de chacun des éléments du tableau.
-
-        ###########################################################################
-        idx        0   1   2   3   4   5   6   7   8   9
-        count = [  3,  3,  4,  0,  1,  1,  0,  2,  1,  2 ]
-
-2. ➕ Calculer le Cumul
-On transforme le tableau de comptage Count en un tableau de comptage cumulé.
-
-        ###########################################################################
-        idx        0   1   2   3   4   5   6   7   8   9
-        count = [  3,  3,  4,  0,  1,  1,  0,  2,  1,  2 ]
-        c_cumul=[  3,  6,  10, 10, 11, 12, 12, 14, 15, 17]
-        
-   
-4. ➡️ Placer les Éléments
-C'est l'étape la plus délicate, qui assure la stabilité du tri.
-- On crée un tableau de sortie (Output Array, B) de la même taille que la liste d'entrée A.
-- On parcourt la liste d'entrée à l'envers (de la droite a la gauche).
-- Pour chaque index d'élement dans arr correspond à sa position dans c-cumul -1 (explication ci dessous)
-
-        ##########################################################################
-        idx    0   1   2   3   4   5   6   7   8   9   10  11  12   13  14  15  16 
-        __________________________________________________________________________   
-        A   = [2,  1,  1,  0,  2,  5,  4,  0,  2,  8,  7,  7,   9,  2,  0,   1,  9]
-        |                                                                        ^
-        |                                                                        |
-        B   = [ ,  ,    ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,    ,    ,   ]
-
-        #################################################
-        |  idx        0   1   2   3   4   5   6   7   8   9
-        |  c_cumul=[  3,  6,  10, 10, 11, 12, 12, 14, 15, 17]
-        |
-        |  Current    = 9 # Current est égale a l'index dans count
-        |  position_to_insert_current = c_cumul[9] = 17
-        |
-        |  Maintenant deux étapes :
-        |  1. On décremente c_cumul[current] -= 1 #  c_cumul=[  3,  6,  10, 10, 11, 12, 12, 14, 15, !!16!!]
-        |  2. On va placer current = 9 à position_to_insert_current
-           B   = [ ,  ,    ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,    ,    ,  9]
-
-         /////////////////////////  FIN DE LA PREMIERE ITERATION ///////////////////////// 
-        |  On décréement :
-        |  ##########################################################################
-        |  idx    0   1   2   3   4   5   6   7   8   9   10  11  12   13  14  15  16 
-        |  __________________________________________________________________________   
-        |  A   = [2,  1,  1,  0,  2,  5,  4,  0,  2,  8,  7,  7,   9,  2,  0,   1,  9]
-        |                                                                       ^
-        |                                                                       |
-        |  B   = [ ,  ,    ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,    ,    ,  9]
-        |
-        |  ##################################################
-        |  c_cumul=[  3,  6,  10, 10, 11, 12, 12, 14, 15, 16]
-            
-        |  Current    = 1 # Current est égale a l'index dans count
-        |  position_to_insert_current = c_cumul[1] = 6
-        |
-        |  Maintenant deux étapes :
-        |  1. On décremente c_cumul[current] -= 1 #  c_cumul=[  3,  !!5!!,  10, 10, 11, 12, 12, 14, 15, 16]
-        |  2. On va placer current = 1 à position_to_insert_current
-           B   = [  ,  ,    ,   ,   ,  1,   ,   ,   ,   ,   ,   ,   ,   ,    ,    ,  9]
-        /////////////////////////  FIN DE LA DEUXIEME ITERATION ///////////////////////// 
-        
-En résumé : 
-#### 🧩 1️⃣ Les trois tableaux mentaux
-
-A → ton tableau d’origine (les données à trier)
-B → le tableau trié (la “destination”)
-C → le comptage brut (combien de fois chaque chiffre apparaît)
-C_cumul → le cumul de C (combien d’éléments ≤ à chaque chiffre)
-          
-#### ⚙️ 2️⃣ Ce que signifie vraiment chaque case de C_cumul
-
-C_cumul[x] = “le nombre total d’éléments dont le chiffre est ≤ x”.
-
-Autrement dit, les chiffres ≤ x occupent les C_cumul[x] premières cases du tableau trié B.
-
-Quand tu traites 321 (chiffre = 1) :
-
-        C_cumul[1] = 2 → donc “les chiffres ≤ 1 remplissent les 2 premières cases” →
-        → la dernière case libre pour ce chiffre est index 1 (2 - 1).
-        -> Puis tu décrémentes C_cumul[1] à 1 pour le suivant.
-
-| Tableau | Signification     | Exemple              |
-| ------- | ----------------- | -------------------- |
-| A       | données           | `[15, 1, 321]`       |
-| C       | comptage          | `[0, 2, 0, 0, 0, 1]` |
-| C_cumul | territoire cumulé | `[0, 2, 2, 2, 2, 3]` |
-| B       | résultat          | `[1, 321, 15]`       |
-
-
----
 ### Radix Sort
-
 Il existe deux implémentation possible de l'algorithme radix sort : 
 - LSD
 - MSD
@@ -607,7 +511,6 @@ Ainsi on obtient une liste trié !
 
 #### Implémentation du code 
 
-
         def radix_sort_msd_second_implementation(arr):
             max_value = max(arr)
             number_digit = len(str(max_value))
@@ -644,6 +547,7 @@ Ainsi on obtient une liste trié !
             return helper_recursive(arr, number_digit)
 
 
+---
 # Shell Sort
 Idée : on trie la liste via plusieurs tris par insertion sur des sous-séquences espacées d’un pas (gap) qu’on réduit (÷2) jusqu’à 1.
 
@@ -736,6 +640,252 @@ Liste de départ :
 
 Impplémentation récursive :
 TODO
+
+---
+## Bonus
+### Cycle Sort.
+L'idée générale du cycle sort et de de triéer une liste sous forme de cycle.
+
+Récuper un élément le placer a sa position final et tant que le trou ... n'est pas bouché on continue. Si il est bouché on passe alors a un deuxième cycle.
+
+Ansi de suite, jusqu'a ce que la longeur de notre cycle soit égal à la longeur de notre liste, a ce moment notre liste est trié.
+
+Voici le concept : 
+        
+        list = [50, 30, 20, 10, 40]
+        
+        on récupére le premier element 
+
+                  50
+                  ^
+                  | 
+        list = [ ..., 30, 20, 10, 40 ]
+
+Attention :  a aucun moment on ne retire 50 de la lisite c'est une image mentale. 
+Une fois l'élément récuperer, on va chercher sa place en le comparant avec tous les autres éléments de la liste (attention a ne pas le comparer avec lui même). 
+
+#### Version sans doublon
+
+       |          CYCLE 1 
+       |
+       | #============== while : iteration : 1 =================
+       | 30 < 50 ? oui, index_to_insert += 1
+       | 20 < 50 ? oui, index_to_insert += 1
+       | 10 < 50 ? oui, index_to_insert += 1
+       | 40 < 50 ? oui, index_to_insert += 1
+       | 
+       | index_to_insert = 4               
+       |                       40
+       |                       ^
+       |                       |    
+       | list[..., 30, 20, 10, 50]
+       |
+        #============== while : iteration : 2 =================
+       | 
+       | 30 < 40 ? oui, index_to_insert += 1
+       | 20 < 40 ? oui, index_to_insert += 1
+       | 10 < 40 ? oui, index_to_insert += 1
+       | 50 < 40 ? non
+       |
+       | index_to_insert = 3
+       |
+       |                     10
+       |                     ^
+       |                     |    
+       |  list[..., 30, 20, 40, 50]
+       |
+        #============== while : iteration : 3 =================
+       |
+       | 30 < 10 ? non
+       | 20 < 10 ? non
+       | 40 < 10 ? non
+       | 50 < 10 ? non
+       |
+       | index_to_insert = 0 
+       | list[10, 30, 20, 40, 50]
+       |
+       | Le tri est rebouché on a terminé notre premier cycle.
+       | ========================================================
+       |
+       |             CYCLE 2
+       |
+       | On passe au deuxieme cycle comme cela : 
+       |
+       |             30
+       |             ^
+       |             |
+       |  list[10, ..., 20, 40, 50]
+
+Ainsi de suite jusqu'a a voir terminé notre cycle. 
+
+---
+
+### Version avec doublon
+
+La version avec doublon est similaire. L'idée est si on veux insérer un élement a une position mais qu'a cette position un doublon est présent alors on avance de 1, jusqu'a qui n'y ai plus de doublons ET qu'on ne soit pas au niveau du Trou ! car si on passe au niveau du Trou alors on insére notre élément et on termine le cycle. 
+
+
+Une fois cela visualiser l'implémentation est beaucoup plus simple.
+
+#### Version finale 
+
+       def cycle_sort_correction(arr):
+        n = len(arr)
+        cycle_start = 0
+
+        while cycle_start < n - 1:
+            search_value = arr[cycle_start]
+
+            # boucle d’un cycle
+            while True:
+                # 1) Rang : compter sur TOUT le tableau, en s’excluant soi-même
+                index_to_insert = 0
+                for i in range(n):
+                    if i != cycle_start and arr[i] < search_value:
+                        index_to_insert += 1
+
+                # 2) Si déjà au bon endroit dans le bloc → cycle trivial
+                if index_to_insert == cycle_start:
+                    # reboucher le trou et passer au cycle suivant
+                    arr[cycle_start] = search_value
+                    cycle_start += 1
+                    break
+
+                # 3) Skip des doublons (avec bornes et stop si on retombe sur le trou)
+                toto = index_to_insert
+                tata = n
+
+                titi = arr[index_to_insert]
+                ttyty = search_value
+
+                while index_to_insert < n and arr[index_to_insert] == search_value:
+                    if index_to_insert == cycle_start:
+                        # le trou est revenu au départ → cycle terminé
+                        arr[cycle_start] = search_value
+                        cycle_start += 1
+                        break
+                    index_to_insert += 1
+                else:
+                    # 4) Écriture si on a trouvé une case distincte dans les bornes
+                    if index_to_insert < n:
+                        tmp = arr[index_to_insert]
+                        arr[index_to_insert] = search_value
+                        search_value = tmp
+                        # on continue le cycle avec le nouvel item porté
+                        continue
+                    # sinon (fin du tableau après skip) → cycle trivial
+                    arr[cycle_start] = search_value
+                    cycle_start += 1
+                    break
+
+                # si on a quitté le while via “break” dans le skip (retour trou)
+                # on sort aussi de la boucle du cycle
+                break
+
+---
+
+### Counting Sort
+Au lieu de comparer les éléments entre eux (comme le font le Merge Sort ou le Quick Sort), le Counting Sort utilise un tableau auxiliaire pour compter la fréquence de chaque valeur de la liste d'entrée.
+
+#### Les quatres étapes clés
+1. Compter la fréquence
+On crée un tableau de comptage (count array, Count) dont la taille est égale a la valeur maximal du tableau + 1 (pour y inclure les valeurs 0).
+
+        ##########################################################################
+        idx    0   1   2   3   4   5   6   7   8   9   10  11  12   13  14  15  16 
+        __________________________________________________________________________   
+        A   = [2,  1,  1,  0,  2,  5,  4,  0,  2,  8,  7,  7,   9,  2,  0,   1,  9]
+
+Le plus grand élément du tableau est 9. Donc on va créer un tableau de 10 éléments et compter les occurences de chacun des éléments du tableau.
+
+        ###########################################################################
+        idx        0   1   2   3   4   5   6   7   8   9
+        count = [  3,  3,  4,  0,  1,  1,  0,  2,  1,  2 ]
+
+2. ➕ Calculer le Cumul
+On transforme le tableau de comptage Count en un tableau de comptage cumulé.
+
+        ###########################################################################
+        idx        0   1   2   3   4   5   6   7   8   9
+        count = [  3,  3,  4,  0,  1,  1,  0,  2,  1,  2 ]
+        c_cumul=[  3,  6,  10, 10, 11, 12, 12, 14, 15, 17]
+        
+   
+4. ➡️ Placer les Éléments
+C'est l'étape la plus délicate, qui assure la stabilité du tri.
+- On crée un tableau de sortie (Output Array, B) de la même taille que la liste d'entrée A.
+- On parcourt la liste d'entrée à l'envers (de la droite a la gauche).
+- Pour chaque index d'élement dans arr correspond à sa position dans c-cumul -1 (explication ci dessous)
+
+        ##########################################################################
+        idx    0   1   2   3   4   5   6   7   8   9   10  11  12   13  14  15  16 
+        __________________________________________________________________________   
+        A   = [2,  1,  1,  0,  2,  5,  4,  0,  2,  8,  7,  7,   9,  2,  0,   1,  9]
+        |                                                                        ^
+        |                                                                        |
+        B   = [ ,  ,    ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,    ,    ,   ]
+
+        #################################################
+        |  idx        0   1   2   3   4   5   6   7   8   9
+        |  c_cumul=[  3,  6,  10, 10, 11, 12, 12, 14, 15, 17]
+        |
+        |  Current    = 9 # Current est égale a l'index dans count
+        |  position_to_insert_current = c_cumul[9] = 17
+        |
+        |  Maintenant deux étapes :
+        |  1. On décremente c_cumul[current] -= 1 #  c_cumul=[  3,  6,  10, 10, 11, 12, 12, 14, 15, !!16!!]
+        |  2. On va placer current = 9 à position_to_insert_current
+           B   = [ ,  ,    ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,    ,    ,  9]
+
+         /////////////////////////  FIN DE LA PREMIERE ITERATION ///////////////////////// 
+        |  On décréement :
+        |  ##########################################################################
+        |  idx    0   1   2   3   4   5   6   7   8   9   10  11  12   13  14  15  16 
+        |  __________________________________________________________________________   
+        |  A   = [2,  1,  1,  0,  2,  5,  4,  0,  2,  8,  7,  7,   9,  2,  0,   1,  9]
+        |                                                                       ^
+        |                                                                       |
+        |  B   = [ ,  ,    ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,   ,    ,    ,  9]
+        |
+        |  ##################################################
+        |  c_cumul=[  3,  6,  10, 10, 11, 12, 12, 14, 15, 16]
+            
+        |  Current    = 1 # Current est égale a l'index dans count
+        |  position_to_insert_current = c_cumul[1] = 6
+        |
+        |  Maintenant deux étapes :
+        |  1. On décremente c_cumul[current] -= 1 #  c_cumul=[  3,  !!5!!,  10, 10, 11, 12, 12, 14, 15, 16]
+        |  2. On va placer current = 1 à position_to_insert_current
+           B   = [  ,  ,    ,   ,   ,  1,   ,   ,   ,   ,   ,   ,   ,   ,    ,    ,  9]
+        /////////////////////////  FIN DE LA DEUXIEME ITERATION ///////////////////////// 
+        
+En résumé : 
+#### 🧩 1️⃣ Les trois tableaux mentaux
+
+A → ton tableau d’origine (les données à trier)
+B → le tableau trié (la “destination”)
+C → le comptage brut (combien de fois chaque chiffre apparaît)
+C_cumul → le cumul de C (combien d’éléments ≤ à chaque chiffre)
+          
+#### ⚙️ 2️⃣ Ce que signifie vraiment chaque case de C_cumul
+
+C_cumul[x] = “le nombre total d’éléments dont le chiffre est ≤ x”.
+
+Autrement dit, les chiffres ≤ x occupent les C_cumul[x] premières cases du tableau trié B.
+
+Quand tu traites 321 (chiffre = 1) :
+
+        C_cumul[1] = 2 → donc “les chiffres ≤ 1 remplissent les 2 premières cases” →
+        → la dernière case libre pour ce chiffre est index 1 (2 - 1).
+        -> Puis tu décrémentes C_cumul[1] à 1 pour le suivant.
+
+| Tableau | Signification     | Exemple              |
+| ------- | ----------------- | -------------------- |
+| A       | données           | `[15, 1, 321]`       |
+| C       | comptage          | `[0, 2, 0, 0, 0, 1]` |
+| C_cumul | territoire cumulé | `[0, 2, 2, 2, 2, 3]` |
+| B       | résultat          | `[1, 321, 15]`       |
+
      
-## RADIX SORT
+
 
